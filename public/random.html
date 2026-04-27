@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机练习 - 注册会计师题库系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>注册会计师题库系统</h1>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="practice.html">顺序练习</a>
+                <a href="random.html" class="active">随机练习</a>
+                <a href="exam.html">模拟考试</a>
+                <a href="wrong.html">错题本</a>
+                <a href="statistics.html">统计</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="controls-bar">
+                <h2>随机练习</h2>
+                <div class="filter-section">
+                    <label>选择科目:</label>
+                    <select id="subject-select">
+                        <option value="">全部科目</option>
+                    </select>
+                    <label>题目数量:</label>
+                    <select id="question-count">
+                        <option value="10">10题</option>
+                        <option value="20" selected>20题</option>
+                        <option value="50">50题</option>
+                        <option value="100">100题</option>
+                    </select>
+                    <button class="btn-primary" onclick="startRandomPractice()">开始随机练习</button>
+                </div>
+            </div>
+
+            <div id="question-container" class="question-container">
+                <p style="text-align: center; color: #666; padding: 50px;">
+                    请选择科目和题目数量后开始练习
+                </p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 注册会计师题库系统</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let allQuestions = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubjects();
+        });
+
+        // 加载科目列表
+        async function loadSubjects() {
+            try {
+                const response = await fetch('/api/subjects');
+                const subjects = await response.json();
+                
+                const select = document.getElementById('subject-select');
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('加载科目失败:', error);
+            }
+        }
+
+        // 开始随机练习
+        async function startRandomPractice() {
+            const subject = document.getElementById('subject-select').value;
+            const count = parseInt(document.getElementById('question-count').value);
+            
+            try {
+                let url = '/api/questions?';
+                if (subject) {
+                    url += `subject=${encodeURIComponent(subject)}&`;
+                }
+                url += 'limit=1000'; // 先获取较多题目，然后随机选择
+                
+                const response = await fetch(url);
+                allQuestions = await response.json();
+                
+                if (allQuestions.length === 0) {
+                    alert('该科目暂无题目');
+                    return;
+                }
+                
+                // 随机选择题目
+                const shuffled = allQuestions.sort(() => Math.random() - 0.5);
+                currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
+                currentIndex = 0;
+                userAnswers = new Array(currentQuestions.length).fill(null);
+                
+                displayQuestion();
+            } catch (error) {
+                console.error('加载题目失败:', error);
+                alert('加载题目失败');
+            }
+        }
+    </script>
+</body>
+</html>

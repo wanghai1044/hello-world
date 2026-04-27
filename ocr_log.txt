@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "c:\Users\Administrator\CodeBuddy\20260426000922\ocr_with_tesseract.py", line 84, in main
+    text = pytesseract.image_to_string(img, lang='chi_sim+eng', config='--psm 6')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\site-packages\pytesseract\pytesseract.py", line 486, in image_to_string
+    return {
+           ^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\site-packages\pytesseract\pytesseract.py", line 489, in <lambda>
+    Output.STRING: lambda: run_and_get_output(*args),
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\site-packages\pytesseract\pytesseract.py", line 352, in run_and_get_output
+    run_tesseract(**kwargs)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\site-packages\pytesseract\pytesseract.py", line 284, in run_tesseract
+    raise TesseractError(proc.returncode, get_errors(error_string))
+pytesseract.pytesseract.TesseractError: (3, 'Error in pixCreateNoInit: pixdata_malloc fail for data Error in pixCreate: pixd not made Error in pixReadMemPng: pix not made Error in pixReadMem: png: no pix returned src_pix != nullptr:Error:Assert failed:in file ../../../src/ccstruct/imagedata.cpp, line 223 ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c26b63310 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/chi_sim.traineddatalstm-punc-dawg) ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c26c10be0 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/chi_sim.traineddatalstm-word-dawg) ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c26b7f100 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/chi_sim.traineddatalstm-number-dawg) ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c26ff1fd0 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-punc-dawg) ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c270bae80 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-word-dawg) ObjectCache(00007ff9b4176600)::~ObjectCache(): WARNING! LEAK! object 0000021c26aa6160 still has count 1 (id D:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-number-dawg)')

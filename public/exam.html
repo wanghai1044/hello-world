@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟考试 - 注册会计师题库系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>注册会计师题库系统</h1>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="practice.html">顺序练习</a>
+                <a href="random.html">随机练习</a>
+                <a href="exam.html" class="active">模拟考试</a>
+                <a href="wrong.html">错题本</a>
+                <a href="statistics.html">统计</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="controls-bar">
+                <h2>模拟考试</h2>
+                <div class="filter-section">
+                    <label>选择科目:</label>
+                    <select id="exam-subject">
+                        <option value="会计">会计</option>
+                        <option value="审计">审计</option>
+                        <option value="财务成本管理">财务成本管理</option>
+                        <option value="经济法">经济法</option>
+                        <option value="税法">税法</option>
+                        <option value="公司战略与风险管理">公司战略与风险管理</option>
+                    </select>
+                    <label>考试时间(分钟):</label>
+                    <input type="number" id="exam-duration" value="120" min="30" max="180" style="width: 80px; padding: 5px;">
+                    <button class="btn-primary" onclick="startExam()">开始考试</button>
+                </div>
+            </div>
+
+            <div id="exam-container" style="display: none;">
+                <div class="exam-header">
+                    <div class="exam-timer">
+                        <h3>剩余时间: <span id="timer">02:00:00</span></h3>
+                    </div>
+                    <div class="exam-progress">
+                        <span>进度: <span id="exam-progress">0</span> / <span id="exam-total">0</span></span>
+                    </div>
+                </div>
+
+                <div id="question-container" class="question-container"></div>
+
+                <div class="exam-controls">
+                    <button class="btn-control" onclick="prevQuestion()" id="prev-btn" disabled>上一题</button>
+                    <button class="btn-control" onclick="nextQuestion()" id="next-btn">下一题</button>
+                    <button class="btn-control" onclick="submitExam()" id="submit-btn" style="display: none;">提交试卷</button>
+                </div>
+            </div>
+
+            <div id="exam-start" class="question-container">
+                <p style="text-align: center; color: #666; padding: 50px;">
+                    请选择科目和考试时间，然后点击"开始考试"
+                </p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 注册会计师题库系统</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        let examTimer = null;
+        let examTimeLeft = 0;
+        let isExamMode = false;
+
+        function startExam() {
+            const subject = document.getElementById('exam-subject').value;
+            const duration = parseInt(document.getElementById('exam-duration').value);
+            
+            if (!confirm(`确认开始${subject}科目的模拟考试吗？\n考试时间: ${duration}分钟\n开始后将计时，请合理安排时间。`)) {
+                return;
+            }
+            
+            // 加载考试题目（随机50题）
+            fetch(`/api/questions?subject=${encodeURIComponent(subject)}&limit=1000`)
+                .then(res => res.json())
+                .then(questions => {
+                    if (questions.length < 10) {
+                        alert('该科目题目数量不足，无法进行模拟考试');
+                        return;
+                    }
+                    
+                    // 随机选择50题或全部题目（如果少于50题）
+                    const shuffled = questions.sort(() => Math.random() - 0.5);
+                    currentQuestions = shuffled.slice(0, Math.min(50, shuffled.length));
+                    currentIndex = 0;
+                    userAnswers = new Array(currentQuestions.length).fill(null);
+                    isExamMode = true;
+                    
+                    // 显示考试界面
+                    document.getElementById('exam-start').style.display = 'none';
+                    document.getElementById('exam-container').style.display = 'block';
+                    document.getElementById('exam-total').textContent = currentQuestions.length;
+                    
+                    // 开始计时
+                    startTimer(duration * 60);
+                    
+                    // 显示第一题
+                    displayQuestion();
+                })
+                .catch(err => {
+                    console.error('加载题目失败:', err);
+                    alert('加载题目失败');
+                });
+        }
+
+        function startTimer(seconds) {
+            examTimeLeft = seconds;
+            updateTimerDisplay();
+            
+            examTimer = setInterval(() => {
+                examTimeLeft--;
+                updateTimerDisplay();
+                
+                if (examTimeLeft <= 0) {
+                    clearInterval(examTimer);
+                    alert('考试时间到！系统将自动提交试卷。');
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(examTimeLeft / 3600);
+            const minutes = Math.floor((examTimeLeft % 3600) / 60);
+            const seconds = examTimeLeft % 60;
+            
+            const timerStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('timer').textContent = timerStr;
+        }
+
+        // 重写displayQuestion以支持考试模式
+        const originalDisplayQuestion = displayQuestion;
+        displayQuestion = function() {
+            if (!isExamMode) {
+                if (originalDisplayQuestion) originalDisplayQuestion();
+                return;
+            }
+            
+            if (currentIndex >= currentQuestions.length) {
+                showResult();
+                return;
+            }
+            
+            const question = currentQuestions[currentIndex];
+            const container = document.getElementById('question-container');
+            
+            let optionsHtml = '';
+            const options = [
+                {key: 'A', value: question.option_a},
+                {key: 'B', value: question.option_b},
+                {key: 'C', value: question.option_c},
+                {key: 'D', value: question.option_d}
+            ];
+            
+            if (question.option_e) {
+                options.push({key: 'E', value: question.option_e});
+            }
+            
+            options.forEach(option => {
+                if (option.value) {
+                    const isSelected = userAnswers[currentIndex] === option.key;
+                    optionsHtml += `
+                        <div class="option ${isSelected ? 'selected' : ''}" onclick="selectOption('${option.key}')">
+                            <span class="option-label">${option.key}.</span>
+                            <span class="option-text">${option.value}</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = `
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="question-type">${question.type}</span>
+                        <span class="question-number">第 ${currentIndex + 1} 题 / 共 ${currentQuestions.length} 题</span>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options">${optionsHtml}</div>
+                </div>
+            `;
+            
+            // 更新进度
+            document.getElementById('exam-progress').textContent = currentIndex + 1;
+            
+            // 更新按钮状态
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            if (currentIndex === currentQuestions.length - 1) {
+                document.getElementById('next-btn').style.display = 'none';
+                document.getElementById('submit-btn').style.display = 'inline-block';
+            } else {
+                document.getElementById('next-btn').style.display = 'inline-block';
+                document.getElementById('submit-btn').style.display = 'none';
+            }
+        };
+
+        function submitExam() {
+            if (!confirm('确认提交试卷吗？提交后将无法修改答案。')) {
+                return;
+            }
+            
+            // 停止计时
+            if (examTimer) {
+                clearInterval(examTimer);
+            }
+            
+            // 计算成绩
+            const correctCount = userAnswers.filter((answer, index) => {
+                return answer === currentQuestions[index].correct_answer;
+            }).length;
+            
+            const totalQuestions = currentQuestions.length;
+            const accuracy = (correctCount / totalQuestions * 100).toFixed(2);
+            const score = (correctCount / totalQuestions * 100).toFixed(0);
+            
+            // 显示结果
+            const container = document.getElementById('question-container');
+            container.innerHTML = `
+                <div class="stat-card">
+                    <h3>考试结果</h3>
+                    <div class="stat-item">
+                        <span>科目</span>
+                        <span>${document.getElementById('exam-subject').value}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>总题数</span>
+                        <span>${totalQuestions}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>正确题数</span>
+                        <span>${correctCount}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>错误题数</span>
+                        <span>${totalQuestions - correctCount}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>正确率</span>
+                        <span>${accuracy}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>得分</span>
+                        <span>${score}分</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${accuracy}%">
+                            ${accuracy}%
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <button class="btn-primary" onclick="window.location.href='index.html'">返回首页</button>
+                        <button class="btn-secondary" onclick="reviewExam()" style="margin-left: 10px;">查看错题</button>
+                    </div>
+                </div>
+            `;
+            
+            // 隐藏控制按钮
+            document.querySelector('.exam-controls').style.display = 'none';
+            document.querySelector('.exam-header').style.display = 'none';
+        }
+
+        function reviewExam() {
+            // 显示错题回顾
+            alert('错题回顾功能开发中...');
+        }
+
+        // 重写selectOption以隐藏答案
+        const originalSelectOption = selectOption;
+        selectOption = function(key) {
+            if (!isExamMode) {
+                if (originalSelectOption) originalSelectOption(key);
+                return;
+            }
+            
+            userAnswers[currentIndex] = key;
+            displayQuestion();
+        };
+    </script>
+</body>
+</html>

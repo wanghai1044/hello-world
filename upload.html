@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>题目导入 - 注册会计师题库系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 50px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .upload-area:hover {
+            background: #e7e9ff;
+            border-color: #5568d3;
+        }
+
+        .upload-area.dragover {
+            background: #d4d8ff;
+            border-color: #4458c3;
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: inline-block;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .preview-section {
+            margin-top: 30px;
+        }
+
+        .question-preview {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-preview h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .manual-input {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>题目导入工具</h1>
+            <p>支持PDF、JSON格式文件导入</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <h2>方式一：文件上传</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📄</div>
+                    <p>将文件拖放到此处，或点击选择文件</p>
+                    <p style="color: #666; margin-top: 10px;">支持格式：PDF、JSON</p>
+                    <input type="file" id="fileInput" accept=".pdf,.json">
+                </div>
+                <button class="btn" id="uploadBtn" style="margin-top: 20px;">开始上传并解析</button>
+            </div>
+
+            <div id="progressSection" class="hidden">
+                <h3>处理进度</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                </div>
+                <div id="progressText"></div>
+            </div>
+
+            <div id="messageSection"></div>
+
+            <div id="previewSection" class="preview-section hidden">
+                <h3>题目预览</h3>
+                <div id="questionPreviews"></div>
+                <button class="btn" id="confirmImportBtn">确认导入</button>
+                <button class="btn btn-secondary" id="cancelImportBtn">取消</button>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 2px solid #e0e0e0;">
+
+            <div class="manual-input">
+                <h2>方式二：手动输入</h2>
+                <form id="manualForm">
+                    <div class="form-group">
+                        <label>科目 *</label>
+                        <select id="subject" required>
+                            <option value="">请选择科目</option>
+                            <option value="会计">会计</option>
+                            <option value="审计">审计</option>
+                            <option value="财务成本管理">财务成本管理</option>
+                            <option value="经济法">经济法</option>
+                            <option value="税法">税法</option>
+                            <option value="公司战略与风险管理">公司战略与风险管理</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>章节</label>
+                        <input type="text" id="chapter" placeholder="例如：第一章 总论">
+                    </div>
+
+                    <div class="form-group">
+                        <label>题目类型 *</label>
+                        <select id="type" required>
+                            <option value="单选题">单选题</option>
+                            <option value="多选题">多选题</option>
+                            <option value="计算题">计算题</option>
+                            <option value="简答题">简答题</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>难度</label>
+                        <select id="difficulty">
+                            <option value="1">1 - 简单</option>
+                            <option value="2" selected>2 - 中等</option>
+                            <option value="3">3 - 困难</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>题目内容 *</label>
+                        <textarea id="question" required placeholder="请输入题目内容"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>选项</label>
+                        <div class="options-grid">
+                            <input type="text" id="option_a" placeholder="A. ">
+                            <input type="text" id="option_b" placeholder="B. ">
+                            <input type="text" id="option_c" placeholder="C. ">
+                            <input type="text" id="option_d" placeholder="D. ">
+                        </div>
+                        <input type="text" id="option_e" placeholder="E. (多选题选填)" style="margin-top: 10px; width: 100%; padding: 10px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>正确答案 *</label>
+                        <input type="text" id="correct_answer" required placeholder="单选题填A，多选题填ABC">
+                    </div>
+
+                    <div class="form-group">
+                        <label>答案解析</label>
+                        <textarea id="explanation" placeholder="请输入答案解析"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">添加题目</button>
+                    <button type="button" class="btn btn-secondary" onclick="batchAdd()">批量添加（继续添加下一题）</button>
+                </form>
+
+                <div id="manualMessage"></div>
+            </div>
+        </main>
+
+        <footer style="background: #f8f9fa; text-align: center; padding: 20px; color: #666;">
+            <p>© 2026 注册会计师题库系统 - 题目导入工具</p>
+        </footer>
+    </div>
+
+    <script>
+        let parsedQuestions = [];
+
+        // 文件上传功能
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                uploadArea.querySelector('p').textContent = `已选择: ${fileInput.files[0].name}`;
+            }
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) {
+                showMessage('请先选择文件', 'error');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            showProgress(10, '正在上传文件...');
+
+            // 注意：文件上传需要后端API支持
+            // 当前版本的简化实现：提示用户使用其他方式
+            showMessage('提示：文件上传功能需要后端API支持。建议：1) 使用手动输入 2) 将PDF转为JSON后使用导入工具', 'info');
+            showProgress(0, '');
+            
+            /*
+            // 完整实现（需要后端支持）
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                showProgress(50, '正在解析文件...');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    parsedQuestions = data.questions;
+                    
+                    showProgress(100, '解析完成！');
+                    showMessage(`成功解析 ${parsedQuestions.length} 道题目`, 'success');
+                    showPreviews(parsedQuestions);
+                } else {
+                    throw new Error('上传失败');
+                }
+            } catch (error) {
+                showMessage('上传失败: ' + error.message, 'error');
+                showProgress(0, '');
+            }
+            */
+        });
+
+        // 显示预览
+        function showPreviews(questions) {
+            const section = document.getElementById('previewSection');
+            const container = document.getElementById('questionPreviews');
+            
+            container.innerHTML = '';
+            
+            questions.slice(0, 5).forEach((q, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'question-preview';
+                preview.innerHTML = `
+                    <h4>题目 ${index + 1}</h4>
+                    <p><strong>科目:</strong> ${q.subject}</p>
+                    <p><strong>类型:</strong> ${q.type}</p>
+                    <p><strong>题目:</strong> ${q.question}</p>
+                    <p><strong>答案:</strong> ${q.correct_answer}</p>
+                `;
+                container.appendChild(preview);
+            });
+            
+            if (questions.length > 5) {
+                container.innerHTML += `<p style="text-align: center; color: #666;">... 还有 ${questions.length - 5} 道题目</p>`;
+            }
+            
+            section.classList.remove('hidden');
+        }
+
+        // 确认导入
+        document.getElementById('confirmImportBtn').addEventListener('click', async () => {
+            showMessage('正在导入题目...', 'info');
+            
+            let successCount = 0;
+            for (const q of parsedQuestions) {
+                try {
+                    const response = await fetch('/api/questions', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(q)
+                    });
+                    
+                    if (response.ok) {
+                        successCount++;
+                    }
+                } catch (error) {
+                    console.error('导入失败:', error);
+                }
+            }
+            
+            showMessage(`成功导入 ${successCount} / ${parsedQuestions.length} 道题目`, 'success');
+            document.getElementById('previewSection').classList.add('hidden');
+        });
+
+        document.getElementById('cancelImportBtn').addEventListener('click', () => {
+            document.getElementById('previewSection').classList.add('hidden');
+            parsedQuestions = [];
+        });
+
+        // 手动输入功能
+        document.getElementById('manualForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            addQuestion(false);
+        });
+
+        function addQuestion(continueAdding) {
+            const question = {
+                subject: document.getElementById('subject').value,
+                chapter: document.getElementById('chapter').value,
+                type: document.getElementById('type').value,
+                difficulty: parseInt(document.getElementById('difficulty').value),
+                question: document.getElementById('question').value,
+                option_a: document.getElementById('option_a').value,
+                option_b: document.getElementById('option_b').value,
+                option_c: document.getElementById('option_c').value,
+                option_d: document.getElementById('option_d').value,
+                option_e: document.getElementById('option_e').value,
+                correct_answer: document.getElementById('correct_answer').value.toUpperCase(),
+                explanation: document.getElementById('explanation').value
+            };
+
+            // 发送到服务器
+            fetch('/api/questions', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(question)
+            })
+            .then(response => response.json())
+            .then(data => {
+                showManualMessage(`题目添加成功！ID: ${data.id}`, 'success');
+                
+                if (!continueAdding) {
+                    document.getElementById('manualForm').reset();
+                } else {
+                    // 保留科目和章节，清空题目相关字段
+                    const subject = document.getElementById('subject').value;
+                    const chapter = document.getElementById('chapter').value;
+                    document.getElementById('manualForm').reset();
+                    document.getElementById('subject').value = subject;
+                    document.getElementById('chapter').value = chapter;
+                }
+            })
+            .catch(error => {
+                showManualMessage('添加失败: ' + error.message, 'error');
+            });
+        }
+
+        function batchAdd() {
+            addQuestion(true);
+        }
+
+        // 工具函数
+        function showMessage(text, type) {
+            const section = document.getElementById('messageSection');
+            section.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        function showManualMessage(text, type) {
+            const section = document.getElementById('manualMessage');
+            section.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        function showProgress(percent, text) {
+            const section = document.getElementById('progressSection');
+            const fill = document.getElementById('progressFill');
+            const textEl = document.getElementById('progressText');
+            
+            if (percent > 0) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+            
+            fill.style.width = percent + '%';
+            fill.textContent = percent + '%';
+            textEl.textContent = text;
+        }
+    </script>
+</body>
+</html>

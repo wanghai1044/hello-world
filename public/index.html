@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册会计师题库系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>注册会计师题库系统</h1>
+            <nav>
+                <a href="index.html" class="active">首页</a>
+                <a href="practice.html">顺序练习</a>
+                <a href="random.html">随机练习</a>
+                <a href="exam.html">模拟考试</a>
+                <a href="wrong.html">错题本</a>
+                <a href="statistics.html">统计</a>
+            </nav>
+            <div class="user-section" id="user-section">
+                <span id="user-info"></span>
+                <button class="btn-small" id="login-btn" onclick="location.href='login.html'">登录</button>
+                <button class="btn-small btn-logout" id="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </header>
+
+        <main>
+            <div class="welcome-section">
+                <h2>欢迎使用注册会计师题库系统</h2>
+                <p>本系统包含会计、审计、财务成本管理、经济法、税法和公司战略与风险管理六个科目的题库</p>
+            </div>
+
+            <div class="subject-cards">
+                <div class="card" onclick="startPractice('会计')">
+                    <h3>会计</h3>
+                    <p>会计准则、财务报表、长期股权投资等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+                <div class="card" onclick="startPractice('审计')">
+                    <h3>审计</h3>
+                    <p>审计理论、审计程序、审计报告等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+                <div class="card" onclick="startPractice('财务成本管理')">
+                    <h3>财务成本管理</h3>
+                    <p>财务管理、成本管理、财务报表分析等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+                <div class="card" onclick="startPractice('经济法')">
+                    <h3>经济法</h3>
+                    <p>合同法、公司法、证券法等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+                <div class="card" onclick="startPractice('税法')">
+                    <h3>税法</h3>
+                    <p>增值税、企业所得税、个人所得税等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+                <div class="card" onclick="startPractice('公司战略与风险管理')">
+                    <h3>公司战略与风险管理</h3>
+                    <p>战略分析、战略选择、风险管理等</p>
+                    <button class="btn-primary">开始练习</button>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <h3>快速开始</h3>
+                <div class="action-buttons">
+                    <a href="practice.html" class="btn-secondary">顺序练习</a>
+                    <a href="random.html" class="btn-secondary">随机练习</a>
+                    <a href="exam.html" class="btn-secondary">模拟考试</a>
+                    <a href="wrong.html" class="btn-secondary">复习错题</a>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 注册会计师题库系统</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

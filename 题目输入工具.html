@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>题目输入工具 - 注册会计师题库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        .question-list {
+            margin-bottom: 30px;
+        }
+
+        .question-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-info h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .question-info p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .input-form {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 题目输入工具</h1>
+            <p>简单快捷地创建题库题目</p>
+        </header>
+
+        <main>
+            <div class="input-form">
+                <h2>添加新题目</h2>
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label>科目 *</label>
+                        <select id="subject" required>
+                            <option value="">请选择科目</option>
+                            <option value="会计">会计</option>
+                            <option value="审计">审计</option>
+                            <option value="财务成本管理">财务成本管理</option>
+                            <option value="经济法">经济法</option>
+                            <option value="税法">税法</option>
+                            <option value="公司战略与风险管理">公司战略与风险管理</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>章节</label>
+                        <input type="text" id="chapter" placeholder="例如：第一章 总论">
+                    </div>
+
+                    <div class="form-group">
+                        <label>题目类型 *</label>
+                        <select id="type" required>
+                            <option value="单选题">单选题</option>
+                            <option value="多选题">多选题</option>
+                            <option value="计算题">计算题</option>
+                            <option value="简答题">简答题</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>难度</label>
+                        <select id="difficulty">
+                            <option value="1">1 - 简单</option>
+                            <option value="2" selected>2 - 中等</option>
+                            <option value="3">3 - 困难</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>题目内容 *</label>
+                        <textarea id="question" required placeholder="请输入题目内容"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>选项</label>
+                        <div class="options-grid">
+                            <input type="text" id="option_a" placeholder="A. 选项内容">
+                            <input type="text" id="option_b" placeholder="B. 选项内容">
+                            <input type="text" id="option_c" placeholder="C. 选项内容">
+                            <input type="text" id="option_d" placeholder="D. 选项内容">
+                        </div>
+                        <input type="text" id="option_e" placeholder="E. 选项内容（多选题选填）" style="margin-top: 10px; width: 100%; padding: 10px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label>正确答案 *</label>
+                        <input type="text" id="correct_answer" required placeholder="单选题填 A，多选题填 ABC">
+                    </div>
+
+                    <div class="form-group">
+                        <label>答案解析</label>
+                        <textarea id="explanation" placeholder="请输入答案解析"></textarea>
+                    </div>
+
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-primary">添加题目</button>
+                        <button type="button" class="btn btn-secondary" onclick="addAndContinue()">添加并继续</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">清空表单</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="question-list">
+                <h2>已添加的题目 (<span id="questionCount">0</span>)</h2>
+                <div id="questionsContainer">
+                    <p class="empty-message">暂无题目，请添加题目</p>
+                </div>
+            </div>
+
+            <div class="buttons" style="justify-content: center;">
+                <button class="btn btn-success" onclick="exportJSON()">📥 导出JSON文件</button>
+                <button class="btn btn-secondary" onclick="importJSON()">📤 导入JSON文件</button>
+                <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空所有</button>
+            </div>
+        </main>
+
+        <footer style="background: #f8f9fa; text-align: center; padding: 20px; color: #666;">
+            <p>© 2026 注册会计师题库系统 - 题目输入工具</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                导出JSON后，运行 <code>node import-to-database.js</code> 导入到系统
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        let questions = [];
+        let addAndContinueFlag = false;
+
+        // 添加题目
+        document.getElementById('questionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            addQuestion();
+        });
+
+        function addQuestion() {
+            const question = {
+                subject: document.getElementById('subject').value,
+                chapter: document.getElementById('chapter').value,
+                type: document.getElementById('type').value,
+                difficulty: parseInt(document.getElementById('difficulty').value),
+                question: document.getElementById('question').value,
+                option_a: document.getElementById('option_a').value,
+                option_b: document.getElementById('option_b').value,
+                option_c: document.getElementById('option_c').value,
+                option_d: document.getElementById('option_d').value,
+                option_e: document.getElementById('option_e').value,
+                correct_answer: document.getElementById('correct_answer').value.toUpperCase(),
+                explanation: document.getElementById('explanation').value
+            };
+
+            // 验证必填字段
+            if (!question.subject || !question.question || !question.correct_answer) {
+                alert('请填写必填字段（科目、题目内容、正确答案）');
+                return;
+            }
+
+            questions.push(question);
+            updateQuestionList();
+            
+            if (!addAndContinueFlag) {
+                clearForm();
+            } else {
+                // 保留科目和章节
+                const subject = document.getElementById('subject').value;
+                const chapter = document.getElementById('chapter').value;
+                clearForm();
+                document.getElementById('subject').value = subject;
+                document.getElementById('chapter').value = chapter;
+            }
+        }
+
+        function addAndContinue() {
+            addAndContinueFlag = true;
+            document.getElementById('questionForm').dispatchEvent(new Event('submit'));
+            addAndContinueFlag = false;
+        }
+
+        function clearForm() {
+            document.getElementById('questionForm').reset();
+            document.getElementById('difficulty').value = '2';
+        }
+
+        function deleteQuestion(index) {
+            if (confirm('确认删除此题？')) {
+                questions.splice(index, 1);
+                updateQuestionList();
+            }
+        }
+
+        function updateQuestionList() {
+            const container = document.getElementById('questionsContainer');
+            const count = document.getElementById('questionCount');
+            
+            count.textContent = questions.length;
+
+            if (questions.length === 0) {
+                container.innerHTML = '<p class="empty-message">暂无题目，请添加题目</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            questions.forEach((q, index) => {
+                const item = document.createElement('div');
+                item.className = 'question-item';
+                item.innerHTML = `
+                    <div class="question-info">
+                        <h4>题目 ${index + 1}: ${q.subject} - ${q.type}</h4>
+                        <p>${q.question.substring(0, 50)}...</p>
+                    </div>
+                    <button class="btn-delete" onclick="deleteQuestion(${index})">删除</button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function exportJSON() {
+            if (questions.length === 0) {
+                alert('没有题目可以导出');
+                return;
+            }
+
+            const json = JSON.stringify(questions, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'imported-questions.json';
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            
+            alert(`✓ 成功导出 ${questions.length} 道题目！\n\n下一步：\n1. 将下载的JSON文件放到项目目录\n2. 运行 node import-to-database.js 导入到系统`);
+        }
+
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const imported = JSON.parse(event.target.result);
+                        if (Array.isArray(imported)) {
+                            questions = questions.concat(imported);
+                            updateQuestionList();
+                            alert(`✓ 成功导入 ${imported.length} 道题目！`);
+                        } else {
+                            alert('JSON格式错误：应为数组格式');
+                        }
+                    } catch (error) {
+                        alert('JSON解析失败：' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function clearAll() {
+            if (confirm('确认清空所有题目？此操作不可撤销！')) {
+                questions = [];
+                updateQuestionList();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顺序练习 - 注册会计师题库系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>注册会计师题库系统</h1>
+            <nav>
+                <a href="index.html">首页</a>
+                <a href="practice.html" class="active">顺序练习</a>
+                <a href="random.html">随机练习</a>
+                <a href="exam.html">模拟考试</a>
+                <a href="wrong.html">错题本</a>
+                <a href="statistics.html">统计</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="controls-bar">
+                <h2>顺序练习</h2>
+                <div class="filter-section">
+                    <label>选择科目:</label>
+                    <select id="subject-select" onchange="onSubjectChange()">
+                        <option value="">全部科目</option>
+                    </select>
+                    <button class="btn-primary" onclick="startPractice()">开始练习</button>
+                </div>
+            </div>
+
+            <div id="question-container" class="question-container">
+                <p style="text-align: center; color: #666; padding: 50px;">
+                    请选择科目后开始练习
+                </p>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2026 注册会计师题库系统</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSubjects();
+            
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject');
+            if (subject) {
+                document.getElementById('subject-select').value = subject;
+                startPractice();
+            }
+        });
+
+        // 加载科目列表
+        async function loadSubjects() {
+            try {
+                const response = await fetch('/api/subjects');
+                const subjects = await response.json();
+                
+                const select = document.getElementById('subject-select');
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('加载科目失败:', error);
+            }
+        }
+
+        // 科目选择变化
+        function onSubjectChange() {
+            // 可以在这里添加章节筛选
+        }
+
+        // 开始练习
+        function startPractice() {
+            const subject = document.getElementById('subject-select').value;
+            loadQuestions(subject || null, 100);
+        }
+    </script>
+</body>
+</html>

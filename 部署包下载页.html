@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPA题库系统 - 下载部署包</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { background: white; border-radius: 16px; padding: 40px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        h1 { color: #1a1a2e; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { color: #666; margin-bottom: 30px; font-size: 14px; }
+        .files-list { background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .file-item { display: flex; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e9ecef; }
+        .file-item:last-child { margin-bottom: 0; }
+        .file-icon { width: 40px; height: 40px; background: #e3f2fd; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 18px; }
+        .file-name { flex: 1; font-weight: 500; color: #333; }
+        .file-size { color: #999; font-size: 12px; }
+        .deploy-guide { background: #fff3cd; border-radius: 12px; padding: 20px; margin-top: 20px; }
+        .deploy-guide h3 { color: #856404; margin-bottom: 12px; font-size: 16px; }
+        .deploy-guide ol { padding-left: 20px; color: #856404; line-height: 1.8; }
+        .deploy-guide li { margin-bottom: 4px; }
+        .tip { background: #d4edda; border-radius: 12px; padding: 15px; margin-top: 15px; color: #155724; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 CPA题库系统</h1>
+        <p class="subtitle">注册会计师考试练习平台 - 静态部署包</p>
+        
+        <div class="files-list">
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">index.html</div>
+                <div class="file-size">首页</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">practice.html</div>
+                <div class="file-size">顺序练习</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">random.html</div>
+                <div class="file-size">随机练习</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">exam.html</div>
+                <div class="file-size">模拟考试</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">wrong.html</div>
+                <div class="file-size">错题本</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">statistics.html</div>
+                <div class="file-size">统计分析</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">login.html</div>
+                <div class="file-size">登录页面</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">style.css</div>
+                <div class="file-size">样式文件</div>
+            </div>
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-name">app.js</div>
+                <div class="file-size">应用逻辑</div>
+            </div>
+        </div>
+        
+        <div class="deploy-guide">
+            <h3>🚀 部署指南</h3>
+            <ol>
+                <li>在 IDE 右侧「文件」面板中找到 <code>public</code> 文件夹</li>
+                <li>右键点击 <code>public</code> → 「下载」或「压缩」</li>
+                <li>上传到任一静态托管平台：
+                    <ul style="margin-top:8px; margin-left:20px;">
+                        <li><b>Vercel</b> - vercel.com (免费)</li>
+                        <li><b>Netlify</b> - netlify.com (免费)</li>
+                        <li><b>GitHub Pages</b> - github.com (免费)</li>
+                        <li><b>Cloudflare Pages</b> - pages.cloudflare.com (免费)</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+        
+        <div class="tip">
+            💡 <b>提示</b>：以上文件可直接放入任何静态服务器，无需额外配置。
+        </div>
+    </div>
+</body>
+</html>
